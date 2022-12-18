@@ -79,7 +79,7 @@ jobs:
       - name: Sign the published Docker image
         env:
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
-        run: cosign sign --key cosign.key registry.hub.docker.com/akash7778/pubgrade:0.1
+        run: cosign sign --key cosign.key index.docker.io/akash7778/pubgrade
         
 
 
