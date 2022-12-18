@@ -49,12 +49,8 @@ jobs:
             Tllqek9jQ0xyT05vQm1HcTArcXBMTVZWZ0E9PSJ9
             -----END ENCRYPTED COSIGN PRIVATE KEY-----
 
-      - uses: actions/docker/login@master
-        with: # Set the secret as an input
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        env: # Set the secret in the env
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      - name: "docker login"
+        run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
         
         
       - name: Write signing key to disk
