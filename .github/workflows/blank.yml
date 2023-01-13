@@ -32,22 +32,6 @@ jobs:
       - name: cosign-installer
         uses: sigstore/cosign-installer@v2.0.0
 
-      
-      - name: Run a one-line script
-        run: 'echo $KEY'
-        env:
-          KEY: |
-            -----BEGIN ENCRYPTED COSIGN PRIVATE KEY-----
-            eyJrZGYiOnsibmFtZSI6InNjcnlwdCIsInBhcmFtcyI6eyJOIjozMjc2OCwiciI6
-            OCwicCI6MX0sInNhbHQiOiJ6SGUwVHVWVCs0RVpmMkFYWmFyQkxMV0VaNDQ2KzNv
-            TUNyd3dqa2xoZCtNPSJ9LCJjaXBoZXIiOnsibmFtZSI6Im5hY2wvc2VjcmV0Ym94
-            Iiwibm9uY2UiOiIrTXNJMmdOcEVscXJVSVRYYSs1T0pJZHNtZkpxNEd6diJ9LCJj
-            aXBoZXJ0ZXh0IjoiWkE2TGthZ0cveC9LV2FRNnhZamVza1o5L2ZOWnhDS0RtMHZW
-            KzNNc3QyYm1IUUdERkk0UGR5S3ZQbUpwcW14TXE5R1BaTTJlZWZ4N3hCam5GYklE
-            dUtLMklMdnFlMGVNZ2ZpNnR3YU1ZdjRJd0ZSeWpiWEdjTWJYRHYwcWJHRjk4dnNn
-            Q3NhTjRMRTlrT1UrNktreDk4TkN6TUJxaGhYSC9uUXV5ZGtkdnF5ajdQd1N6WHYv
-            Tllqek9jQ0xyT05vQm1HcTArcXBMTVZWZ0E9PSJ9
-            -----END ENCRYPTED COSIGN PRIVATE KEY-----
 
       - name: "docker login"
         run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
