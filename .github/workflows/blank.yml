@@ -1,71 +1,23 @@
-# This is a basic workflow to help you get started with Actions
-
 name: CI
 
-# Controls when the workflow will run
-on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-  repository_dispatch:
-    types: [test]
+on: push
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+    - uses: actions/checkout@v2
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+    # In this step, this action saves a list of existing images,
+    # the cache is created without them in the post run.
+    # It also restores the cache if it exists.
+    - uses: satackey/action-docker-layer-caching@v0.0.11
+      # Ignore the failure of a step and avoid terminating the job.
+      continue-on-error: true
 
-      - name: cosign-installer
-        uses: sigstore/cosign-installer@v2.0.0
-
-
-      - name: "docker login"
-        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-        
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-        
-        
-      - name: Write signing key to disk
-        run: 'echo "$KEY" > cosign.key'
-        shell: bash
-        env:
-          KEY: |
-            -----BEGIN ENCRYPTED COSIGN PRIVATE KEY-----
-            eyJrZGYiOnsibmFtZSI6InNjcnlwdCIsInBhcmFtcyI6eyJOIjozMjc2OCwiciI6
-            OCwicCI6MX0sInNhbHQiOiJ6SGUwVHVWVCs0RVpmMkFYWmFyQkxMV0VaNDQ2KzNv
-            TUNyd3dqa2xoZCtNPSJ9LCJjaXBoZXIiOnsibmFtZSI6Im5hY2wvc2VjcmV0Ym94
-            Iiwibm9uY2UiOiIrTXNJMmdOcEVscXJVSVRYYSs1T0pJZHNtZkpxNEd6diJ9LCJj
-            aXBoZXJ0ZXh0IjoiWkE2TGthZ0cveC9LV2FRNnhZamVza1o5L2ZOWnhDS0RtMHZW
-            KzNNc3QyYm1IUUdERkk0UGR5S3ZQbUpwcW14TXE5R1BaTTJlZWZ4N3hCam5GYklE
-            dUtLMklMdnFlMGVNZ2ZpNnR3YU1ZdjRJd0ZSeWpiWEdjTWJYRHYwcWJHRjk4dnNn
-            Q3NhTjRMRTlrT1UrNktreDk4TkN6TUJxaGhYSC9uUXV5ZGtkdnF5ajdQd1N6WHYv
-            Tllqek9jQ0xyT05vQm1HcTArcXBMTVZWZ0E9PSJ9
-            -----END ENCRYPTED COSIGN PRIVATE KEY-----
-          
-      - name: Sign the published Docker image
-        env:
-          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
-        run: cosign sign --key cosign.key index.docker.io/akash7778/pubgrade:0.1
-        
-
-
+    - name: Build the Docker image
+      run: docker pull hello-world
+      
+    - name: Build the Docker image
+      run: docker push akash7778/hello-world
