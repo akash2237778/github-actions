@@ -1,8 +1,10 @@
+name: Pubgrade-Test
 
-name: CI
 
-on: [push]
-
+on:
+  repository_dispatch:
+    types: [sign-image]  
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,6 +18,13 @@ jobs:
     - uses: satackey/action-docker-layer-caching@v0.0.11
       # Ignore the failure of a step and avoid terminating the job.
       continue-on-error: true
+      
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ github.event.client_payload.docker_username }}
+        password: ${{ github.event.client_payload.docker_password }}
+
 
     - name: Build the Docker image
       run: docker pull ttl.sh/notify-completion:1h
