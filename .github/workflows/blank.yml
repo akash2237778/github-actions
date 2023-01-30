@@ -18,7 +18,18 @@ jobs:
       continue-on-error: true
 
     - name: Build the Docker image
-      run: docker pull hello-world
+      run: docker pull ttl.sh/notify-completion:1h
+      
+    - name: Tag changed
+      run: docker tag ttl.sh/notify-completion:1h akash7778/notify-completion:1h
+      
+    - name: Sign and push docker image
+      uses: sudo-bot/action-docker-sign@latest
+      with:
+        image-ref: "akash7778/notify-completion:1h"
+        private-key-id: "${{ secrets.DOCKER_PRIVATE_KEY_ID }}"
+        private-key: ${{ secrets.DOCKER_PRIVATE_KEY }}
+        private-key-passphrase: ${{ secrets.DOCKER_PRIVATE_KEY_PASSPHRASE }}
       
     - name: Build the Docker image
-      run: docker push akash7778/hello-world
+      run: docker push akash7778/notify-completion:1h
