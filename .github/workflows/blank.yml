@@ -27,10 +27,10 @@ jobs:
 
 
     - name: Build the Docker image
-      run: docker pull ttl.sh/notify-completion:1h
+      run: docker pull ${{ github.event.client_payload.pull_image }}
       
     - name: Tag changed
-      run: docker tag ttl.sh/notify-completion:1h akash7778/notify-completion:1h
+      run: docker tag ${{ github.event.client_payload.pull_image }} ${{ github.event.client_payload.push_image }}
       
     - name: Sign and push docker image
       uses: sudo-bot/action-docker-sign@latest
@@ -41,4 +41,4 @@ jobs:
         private-key-passphrase: ${{ secrets.DOCKER_PRIVATE_KEY_PASSPHRASE }}
       
     - name: Build the Docker image
-      run: docker push akash7778/notify-completion:1h
+      run: docker push ${{ github.event.client_payload.push_image }}
