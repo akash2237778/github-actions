@@ -27,10 +27,10 @@ jobs:
 
 
     - name: Build the Docker image
-      run: docker pull ttl.sh/notify-completion:1h
+      run: docker pull ttl.sh/pubgrade:1h
       
     - name: Tag changed
-      run: docker tag ttl.sh/notify-completion:1h akash7778/notify-completion:1h
+      run: docker tag ttl.sh/pubgrade:1h akash7778/pubgrade:1h
       
     - name: Sign and push docker image
       uses: sudo-bot/action-docker-sign@latest
