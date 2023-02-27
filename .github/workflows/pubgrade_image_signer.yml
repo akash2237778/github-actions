@@ -26,7 +26,7 @@ jobs:
         password: ${{ github.event.client_payload.docker_password }}
 
 
-    - name: Build the Docker image
+    - name: Pull Image
       run: docker pull ${{ github.event.client_payload.pull_tag }}
       
     - name: Tag changed
