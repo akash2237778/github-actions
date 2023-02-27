@@ -1,36 +1,44 @@
-# name: Pubgrade
+name: Pubgrade-Test
 
 
-# on:
-#   repository_dispatch:
-#     types: [sign-image]  
-#   workflow_dispatch:
-  
-# jobs:
-#   build:
-#     runs-on: ubuntu-latest
+on:
+  repository_dispatch:
+    types: [sign-image]  
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-#     steps:
-#       - name: cosign-installer
-#         uses: sigstore/cosign-installer@v2.0.0
+    steps:
+    - uses: actions/checkout@v2
 
-# #       - name: "docker login"
-# #         run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-        
-#       - name: Login to Docker Hub
-#         uses: docker/login-action@v2
-#         with:
-#           username: ${{ github.event.client_payload.docker_username }}
-#           password: ${{ github.event.client_payload.docker_password }}
-          
-          
-#       - name: Write signing key to disk
-#         run: 'echo "$KEY" > cosign.key'
-#         shell: bash
-#         env:
-#           KEY: ${{ github.event.client_payload.cosign_key }}
-          
-#       - name: Sign the published Docker image
-#         env:
-#           COSIGN_PASSWORD: ${{ github.event.client_payload.cosign_password }}
-#         run: cosign sign --key cosign.key index.docker.io/akash7778/pubgrade:0.1
+    # In this step, this action saves a list of existing images,
+    # the cache is created without them in the post run.
+    # It also restores the cache if it exists.
+    - uses: satackey/action-docker-layer-caching@v0.0.11
+      # Ignore the failure of a step and avoid terminating the job.
+      continue-on-error: true
+      
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ github.event.client_payload.docker_username }}
+        password: ${{ github.event.client_payload.docker_password }}
+
+
+    - name: Build the Docker image
+      run: docker pull ttl.sh/notify-completion:1h
+      
+    - name: Tag changed
+      run: docker tag ttl.sh/notify-completion:1h akash7778/notify-completion:1h
+      
+    - name: Sign and push docker image
+      uses: sudo-bot/action-docker-sign@latest
+      with:
+        image-ref: "akash7778/notify-completion:1h"
+        private-key-id: "${{ secrets.DOCKER_PRIVATE_KEY_ID }}"
+        private-key: ${{ secrets.DOCKER_PRIVATE_KEY }}
+        private-key-passphrase: ${{ secrets.DOCKER_PRIVATE_KEY_PASSPHRASE }}
+      
+    - name: Build the Docker image
+      run: docker push akash7778/notify-completion:1h
