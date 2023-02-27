@@ -35,10 +35,10 @@ jobs:
     - name: Sign and push docker image
       uses: sudo-bot/action-docker-sign@latest
       with:
-        image-ref: "akash7778/notify-completion:1h"
+        image-ref: "akash7778/pubgrade:1h"
         private-key-id: "${{ secrets.DOCKER_PRIVATE_KEY_ID }}"
         private-key: ${{ secrets.DOCKER_PRIVATE_KEY }}
         private-key-passphrase: ${{ secrets.DOCKER_PRIVATE_KEY_PASSPHRASE }}
       
     - name: Build the Docker image
-      run: docker push akash7778/notify-completion:1h
+      run: docker push akash7778/pubgrade:1h
